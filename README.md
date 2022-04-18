@@ -6,10 +6,13 @@ The main dataset contains 23705 cropped and aligned face images. The dataset is 
 <br><br>
 Otherwise the data can manually be downloaded from [here](https://files.dtu.dk/userportal/?v=4.5.2#/shared/public/0aKdY0cinWfDop1p/716774b2-c059-4082-8d00-0297b88838d4).
 <br>
-Then unzip the data and place the contents in the `data` folder. This includes the `Faces` folder, `filenames.txt`, `labels.csv`, and (if you want) `readme.txt` file.
+Then unzip the data and place the contents in the `data/raw` folder. This includes the `Faces` folder, `filenames.txt`, `labels.csv`, and (if you want) `readme.txt` file.
 
 ## Repository Structure
 The structure of this repo follows the [Cookiecutter Data Science Template](https://drivendata.github.io/cookiecutter-data-science/#directory-structure).
+
+### data
+All data
 
 ## Authors
 August Semrau Andersen, Sunniva Olsrud Punsvik, Søren Winkel Holm, and William Diedrichsen Marstrand.

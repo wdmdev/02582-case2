@@ -8,8 +8,8 @@ FACES_FILE_URI1 = 'https://files.dtu.dk/fss/public/link/public/stream/read/data.
 
 ZIP_FILE_NAME = 'faces.zip'
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
-ZIP_FILE_PATH = os.path.join(BASE_PATH, '..', '..', 'data', ZIP_FILE_NAME)
-EXTRACT_PATH = os.path.join(BASE_PATH, '..', '..', 'data')
+ZIP_FILE_PATH = os.path.join(BASE_PATH, '..', '..', 'data', 'raw', ZIP_FILE_NAME)
+EXTRACT_PATH = os.path.join(BASE_PATH, '..', '..', 'data', 'raw')
 
 if __name__ == '__main__':
     print('Downloading face data...')
