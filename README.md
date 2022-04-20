@@ -2,16 +2,16 @@
 Exploratory (unsupervised) analysis using a cropped and aligned version of the [UTKFaces](https://susanqq.github.io/UTKFace/) dataset.
 
 ## Setup
-To run the code in this project do a
+To be able to run the code in this project, do a
 ```
-pip install -r requirements.txt
+make install
 ```
 in the root folder to install the dependencies to your environment.
 <br>
 If new pip dependencies are added to the project update the `requirements.txt` file with the dependencies **and the dependency version** to make sure everyone is using the same pip packages and versions to avoid errors.
 
 ## Data
-The main dataset contains 23705 cropped and aligned face images. The dataset is quite large and therefore not well suited for versioning. Therefore the face image data is ignored through the `.gitignore`, but can be downloaded automatically by running the `make_data.py` script in the folder `src/data`.
+The main dataset contains 23705 cropped and aligned face images. The dataset is quite large and therefore not well suited for versioning. Therefore the face image data is ignored through the `.gitignore`, but can be downloaded automatically by running the `make dataset`.
 <br><br>
 Otherwise the data can manually be downloaded from [here](https://files.dtu.dk/userportal/?v=4.5.2#/shared/public/0aKdY0cinWfDop1p/716774b2-c059-4082-8d00-0297b88838d4).
 <br>
