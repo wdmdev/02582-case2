@@ -17,11 +17,16 @@ Otherwise the data can manually be downloaded from [here](https://files.dtu.dk/u
 <br>
 Then unzip the data and place the contents in the `data/raw` folder. This includes the `Faces` folder, `filenames.txt`, `labels.csv`, and (if you want) `readme.txt` file.
 
+Afterwards, run `make features` to create a much faster-loadable data frame.
+
+## Visualization
+Run `make visualize` after installation and data+feature building.
+
 ## Repository Structure
 The structure of this repo follows the [Cookiecutter Data Science Template](https://drivendata.github.io/cookiecutter-data-science/#directory-structure).
 
 ### data
-All raw data should be saved to the `data/raw` folder. When data is preprocessed through code it should be saved (if necessary) to the `data/preprocessed` folder.
+All raw data should be saved to the `data/raw` folder. When data is preprocessed through code it should be saved (if necessary) to the `data/processed` folder.
 
 ### models
 If models are saved after training for later use, they should be saved to the `models` folder.
@@ -39,7 +44,7 @@ The `src` folder should contain **all** code for the project except that in the 
 The `src/data` folder should contain code that generates or downloads data to the `data/raw` folder.
 
 #### src/features
-The `src/features` folder should contain code that generates data features from the raw data in `data/raw` and saves it to the `data/preprocessed` folder.
+The `src/features` folder should contain code that generates data features from the raw data in `data/raw` and saves it to the `data/processed` folder.
 
 #### src/models
 The `src/models` folder should contain code for training a model and saving it to `models` in the root folder if necessary or loading a model from `models` and perform predictions.

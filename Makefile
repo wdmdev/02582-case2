@@ -12,6 +12,12 @@ install:
 dataset:
 	python src/data/make_data.py
 
+features:
+	python src/features/build_features.py
+
+visualize:
+	python src/visualization/visualize.py
+
 ## Delete all compiled Python files
 clean:
 	find . -type f -name "*.py[co]" -delete
