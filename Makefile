@@ -18,6 +18,9 @@ features:
 visualize:
 	python src/visualization/visualize.py
 
+train:
+	python src/models/train_model.py
+
 ## Delete all compiled Python files
 clean:
 	find . -type f -name "*.py[co]" -delete
