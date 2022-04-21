@@ -5,12 +5,12 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '
 import numpy as np
 import pandas as pd
 from skimage import color
-from sklearn.decomposition import DictionaryLearning
+from sklearn.decomposition import MiniBatchDictionaryLearning
 
 from src.features.serialization import load_features
 
 def divide_into_agegroups(df: pd.DataFrame, n_groups: int):
-    age_lists = np.array_split(np.arange(df["age"].min(), df["age"].max()), n_groups)
+    age_lists = np.array_split(np.arange(df["age"].min(), df["age"].max()+1), n_groups)
     datasets = [df[[age in age_list for age in df["age"]]] for age_list in age_lists]
     return datasets
 
@@ -22,7 +22,7 @@ def build_data_matrix(df: pd.DataFrame):
     return X
 
 def train(X: np.ndarray):
-    model = DictionaryLearning()
+    model = MiniBatchDictionaryLearning(n_components=15, transform_alpha=0.1, alpha=0.1, n_iter=50, batch_size=3)
     Z = model.fit_transform(X)
     return Z
 
