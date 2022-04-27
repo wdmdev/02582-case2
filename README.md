@@ -19,6 +19,12 @@ Then unzip the data and place the contents in the `data/raw` folder. This includ
 
 Afterwards, run `make features` to create a much faster-loadable data frame.
 
+## Prediction
+Run 
+```
+make predict model=<model_name> image_folder=<image_folder> output=<output_filename>
+```
+
 ## Visualization
 Run `make visualize` after installation and data+feature building.
 
@@ -27,6 +33,8 @@ The structure of this repo follows the [Cookiecutter Data Science Template](http
 
 ### data
 All raw data should be saved to the `data/raw` folder. When data is preprocessed through code it should be saved (if necessary) to the `data/processed` folder.
+<br>
+If you want to introduce new images and make predictions on them, you should create a new folder in `data/prediction` with a name of your choice e.g. you could create a folder `data/prediction/profile_pics` with profile pictures of yourself.
 
 ### models
 If models are saved after training for later use, they should be saved to the `models` folder.

@@ -21,6 +21,9 @@ visualize:
 train:
 	python src/models/train_model.py
 
+predict:
+	python src/models/predict_model.py --model $(model) --image_folder $(image_folder) --output $(output)
+
 ## Delete all compiled Python files
 clean:
 	find . -type f -name "*.py[co]" -delete

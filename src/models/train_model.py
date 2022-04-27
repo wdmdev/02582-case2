@@ -5,27 +5,28 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '
 import numpy as np
 import pandas as pd
 from skimage import color
+import datetime as dt
 
 from sklearn.decomposition import PCA
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.base import clone
 from sklearn.metrics import confusion_matrix, classification_report, mean_squared_error, r2_score
 
-
+from src.models.model import Model
 from src.features.serialization import load_features
 
-EMBEDDERS = (
-    PCA(n_components=100),
-)
+MODELS = [
+    Model('model1', 
+        embedder=PCA(n_components=100), 
+        race_classifier=KNeighborsClassifier(n_neighbors=5, n_jobs=-1),
+        gender_classifier=KNeighborsClassifier(n_neighbors=5, n_jobs=-1), 
+        age_regressor=KNeighborsRegressor(n_neighbors=5, n_jobs=-1))
+]
 
-CLASSIFIERS = (
-    KNeighborsClassifier(n_neighbors=5, n_jobs=-1),
-)
-REGRESSORS = (
-    KNeighborsRegressor(n_neighbors=5, n_jobs=-1),
-)
+BASE_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', '..')
+REPORT_PATH = os.path.join(BASE_PATH, 'reports')
 
-def run_feature_robustness_test(model, df: pd. DataFrame, e_train: np.ndarray, e_test: np.ndarray, feature: str):
+def run_feature_robustness_test(model, model_name:str, df: pd. DataFrame, e_train: np.ndarray, e_test: np.ndarray, feature: str):
     print(f"\tTesting {feature} robustness of embeddings using {model}...")
     y = df[feature].values
     y_train, y_test = y[df["train"]], y[~df["train"]]
@@ -34,14 +35,25 @@ def run_feature_robustness_test(model, df: pd. DataFrame, e_train: np.ndarray, e
     model.fit(e_train, y_train)
     pred_train, pred_test = model.predict(e_train), model.predict(e_test)
 
-    if feature == "age":
-        # Regression stats
-        print(f"Train MSE, r^2 {mean_squared_error(y_train, pred_train):.2f}, {r2_score(y_train, pred_train):.2f}")
-        print(f"Test MSE, r^2 {mean_squared_error(y_test, pred_test):.2f}, {r2_score(y_test, pred_test):.2f}")
-    else:
-        # Classification stats
-        print("Train conf. mat., report", confusion_matrix(y_train, pred_train), classification_report(y_train, pred_train), sep="\n")
-        print("Test conf. mat., report", confusion_matrix(y_test, pred_test), classification_report(y_test, pred_test), sep="\n")
+    with open(os.path.join(REPORT_PATH, model_name+'.txt'), 'a') as report_file:
+        if feature == "age":
+            # Regression stats
+            msg = f'''
+                    Train MSE, r^2 {mean_squared_error(y_train, pred_train):.2f}, {r2_score(y_train, pred_train):.2f}\n
+                    Test MSE, r^2 {mean_squared_error(y_test, pred_test):.2f}, {r2_score(y_test, pred_test):.2f}\n\n
+                    '''
+            report_file.write(msg)
+            print(msg)
+        else:
+            # Classification stats
+            msg = f'''
+                    train conf. mat., report\n{confusion_matrix(y_train, pred_train)}\n
+                    train conf. mat., report\n{classification_report(y_train, pred_train)}\n
+                    test conf. mat., report\n{confusion_matrix(y_test, pred_test)}\n
+                    test conf. mat., report\n{classification_report(y_test, pred_test)}\n\n
+                    '''
+            report_file.write(msg)
+            print(msg)
 
 def build_data_matrix(df: pd.DataFrame):
     X = np.stack(df["image"])
@@ -54,17 +66,18 @@ def main():
     df = load_features()
     df = df.sample(1000) # <- memory limitation
     Xtrain, Xtest = build_data_matrix(df[df["train"]]), build_data_matrix(df[~df["train"]])
-    for embedder in EMBEDDERS:
-        print(f"Creating face embeddings using {embedder}...")
-        train_embeddings = embedder.fit_transform(Xtrain)
-        test_embeddings = embedder.transform(Xtest)
-        for classifier in CLASSIFIERS:
-            classifier = clone(classifier) # Make sure there is no leakage between runs
-            for f in "race", "gender":
-                run_feature_robustness_test(classifier, df, train_embeddings, test_embeddings, f)
-        for regressor in REGRESSORS:
-            regressor = clone(regressor)
-            run_feature_robustness_test(regressor, df, train_embeddings, test_embeddings, "age")
+    for model in MODELS:
+        with open(os.path.join(REPORT_PATH, model.name+'.txt'), 'a') as report_file:
+            report_file.write('####################################################')
+            report_file.write(f'Run model: {model.name}, time: {dt.datetime.now()}')
+        print(f"Creating face embeddings using {model.embedder}...")
+        train_embeddings = model.embedder.fit_transform(Xtrain)
+        test_embeddings = model.embedder.transform(Xtest)
+        run_feature_robustness_test(model.race_classifier, model.name, df, train_embeddings, test_embeddings, 'race')
+        run_feature_robustness_test(model.gender_classifier, model.name, df, train_embeddings, test_embeddings, 'gender')
+        run_feature_robustness_test(model.age_regressor, model.name, df, train_embeddings, test_embeddings, "age")
+        model.save()
+
 
 if __name__ == "__main__":
     main()
