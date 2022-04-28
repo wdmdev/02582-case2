@@ -8,7 +8,7 @@ import pandas as pd
 from skimage import color
 import datetime as dt
 
-from sklearn.decomposition import PCA
+from sklearn.decomposition import IncrementalPCA, MiniBatchDictionaryLearning, NMF
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.metrics import confusion_matrix, classification_report, mean_squared_error, r2_score
 
@@ -16,12 +16,14 @@ from src.models.model import Model
 from src.features.serialization import load_features
 
 EMBEDDERS = [
-    PCA(n_components=100),
+    IncrementalPCA(n_components=50),
+    MiniBatchDictionaryLearning(n_components=50, n_jobs=-1),
+    NMF(n_components=50),
 ]
 
 # We create a 5NN predictor for each embedding algorithm
 MODELS = [
-    Model('model1',
+    Model(f'model-{embedder.__class__.__name__}'.lower(),
         embedder=embedder,
         race_classifier=KNeighborsClassifier(n_neighbors=5, n_jobs=-1),
         gender_classifier=KNeighborsClassifier(n_neighbors=5, n_jobs=-1),
@@ -65,7 +67,9 @@ def run_feature_robustness_test(model, model_name:str, df: pd. DataFrame, e_trai
             print(msg)
 
 def gauss(img: np.ndarray) -> np.ndarray:
-    return img + np.random.normal(img.std(), size=img.shape)
+    noise = np.random.normal(img.mean(), img.std()/2, size=img.shape)
+    noise[noise < 0] = 0
+    return img + noise
 
 def salt_and_pepper(img: np.ndarray) -> np.ndarray:
     noisy = img.copy()
