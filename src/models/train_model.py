@@ -9,18 +9,23 @@ import datetime as dt
 
 from sklearn.decomposition import PCA
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
-from sklearn.base import clone
 from sklearn.metrics import confusion_matrix, classification_report, mean_squared_error, r2_score
 
 from src.models.model import Model
 from src.features.serialization import load_features
 
+EMBEDDERS = [
+    PCA(n_components=100),
+]
+
+# We create a 5NN predictor for each embedding algorithm
 MODELS = [
-    Model('model1', 
-        embedder=PCA(n_components=100), 
+    Model('model1',
+        embedder=embedder,
         race_classifier=KNeighborsClassifier(n_neighbors=5, n_jobs=-1),
-        gender_classifier=KNeighborsClassifier(n_neighbors=5, n_jobs=-1), 
+        gender_classifier=KNeighborsClassifier(n_neighbors=5, n_jobs=-1),
         age_regressor=KNeighborsRegressor(n_neighbors=5, n_jobs=-1))
+    for embedder in EMBEDDERS
 ]
 
 BASE_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', '..')
@@ -77,7 +82,6 @@ def main():
         run_feature_robustness_test(model.gender_classifier, model.name, df, train_embeddings, test_embeddings, 'gender')
         run_feature_robustness_test(model.age_regressor, model.name, df, train_embeddings, test_embeddings, "age")
         model.save()
-
 
 if __name__ == "__main__":
     main()
