@@ -7,7 +7,7 @@ import pandas as pd
 from skimage import color
 import datetime as dt
 
-from sklearn.decomposition import PCA
+from sklearn.decomposition import PCA, MiniBatchDictionaryLearning, NMF
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.metrics import confusion_matrix, classification_report, mean_squared_error, r2_score
 
@@ -15,16 +15,20 @@ from src.models.model import Model
 from src.features.serialization import load_features
 
 EMBEDDERS = [
-    PCA(n_components=100),
+    PCA(n_components=100)
+    # MiniBatchDictionaryLearning(n_components=15, alpha=0.1, 
+    #     n_iter=50, batch_size=3, random_state=np.random.RandomState(0)),
+    # NMF(n_components=100, init="nndsvda", tol=5e-3)
+    
 ]
 
 # We create a 5NN predictor for each embedding algorithm
 MODELS = [
-    Model('model1',
+    Model('model_100000',
         embedder=embedder,
-        race_classifier=KNeighborsClassifier(n_neighbors=5, n_jobs=-1),
-        gender_classifier=KNeighborsClassifier(n_neighbors=5, n_jobs=-1),
-        age_regressor=KNeighborsRegressor(n_neighbors=5, n_jobs=-1))
+        race_classifier=KNeighborsClassifier(n_neighbors=3, n_jobs=-1),
+        gender_classifier=KNeighborsClassifier(n_neighbors=3, n_jobs=-1),
+        age_regressor=KNeighborsRegressor(n_neighbors=3, n_jobs=-1))
     for embedder in EMBEDDERS
 ]
 
@@ -69,7 +73,7 @@ def build_data_matrix(df: pd.DataFrame):
 
 def main():
     df = load_features()
-    df = df.sample(1000) # <- memory limitation
+    df = df.sample(100000) # <- memory limitation
     Xtrain, Xtest = build_data_matrix(df[df["train"]]), build_data_matrix(df[~df["train"]])
     for model in MODELS:
         with open(os.path.join(REPORT_PATH, model.name+'.txt'), 'a') as report_file:

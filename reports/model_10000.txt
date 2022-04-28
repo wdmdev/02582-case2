@@ -1,0 +1,83 @@
+####################################################Run model: model_10000, time: 2022-04-28 09:39:55.797706
+                    train conf. mat., report
+[[3173   66   75   85   24]
+ [ 437  986   11   43    9]
+ [ 458   73  582   31    5]
+ [ 513   86   49  667   13]
+ [ 316   65   36   32  155]]
+
+                    train conf. mat., report
+              precision    recall  f1-score   support
+
+           0       0.65      0.93      0.76      3423
+           1       0.77      0.66      0.71      1486
+           2       0.77      0.51      0.61      1149
+           3       0.78      0.50      0.61      1328
+           4       0.75      0.26      0.38       604
+
+    accuracy                           0.70      7990
+   macro avg       0.74      0.57      0.62      7990
+weighted avg       0.72      0.70      0.68      7990
+
+
+                    test conf. mat., report
+[[706  42  51  52   7]
+ [169 169   8  35   0]
+ [173  24  71  20   7]
+ [188  31  26  83   5]
+ [ 90  18  19  14   2]]
+
+                    test conf. mat., report
+              precision    recall  f1-score   support
+
+           0       0.53      0.82      0.65       858
+           1       0.60      0.44      0.51       381
+           2       0.41      0.24      0.30       295
+           3       0.41      0.25      0.31       333
+           4       0.10      0.01      0.02       143
+
+    accuracy                           0.51      2010
+   macro avg       0.41      0.35      0.36      2010
+weighted avg       0.47      0.51      0.47      2010
+
+
+
+                    
+                    train conf. mat., report
+[[3626  522]
+ [ 658 3184]]
+
+                    train conf. mat., report
+              precision    recall  f1-score   support
+
+           0       0.85      0.87      0.86      4148
+           1       0.86      0.83      0.84      3842
+
+    accuracy                           0.85      7990
+   macro avg       0.85      0.85      0.85      7990
+weighted avg       0.85      0.85      0.85      7990
+
+
+                    test conf. mat., report
+[[830 256]
+ [296 628]]
+
+                    test conf. mat., report
+              precision    recall  f1-score   support
+
+           0       0.74      0.76      0.75      1086
+           1       0.71      0.68      0.69       924
+
+    accuracy                           0.73      2010
+   macro avg       0.72      0.72      0.72      2010
+weighted avg       0.72      0.73      0.72      2010
+
+
+
+                    
+                    Train MSE, r^2 163.40, 0.58
+
+                    Test MSE, r^2 330.63, 0.19
+
+
+                    
