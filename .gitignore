@@ -771,6 +771,8 @@ $RECYCLE.BIN/
 
 data/raw/**
 data/processed/**
+data/prediction/**
+data/face_match/**
 
 # Keep the .gitkeep files
 !data/raw/.gitkeep

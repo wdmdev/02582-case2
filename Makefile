@@ -24,6 +24,9 @@ train:
 predict:
 	python src/models/predict_model.py --model $(model) --image_folder $(image_folder) --output $(output)
 
+face_matching:
+	python src/models/face_match_model.py --model $(model) --image_folder $(image_folder) --output $(output)
+
 ## Delete all compiled Python files
 clean:
 	find . -type f -name "*.py[co]" -delete

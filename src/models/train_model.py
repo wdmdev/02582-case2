@@ -25,11 +25,11 @@ EMBEDDERS = [
 
 # We create a 5NN predictor for each embedding algorithm
 MODELS = [
-    Model('model_100000',
+    Model('model_all',
         embedder=embedder,
-        race_classifier=KNeighborsClassifier(n_neighbors=3, n_jobs=-1),
-        gender_classifier=KNeighborsClassifier(n_neighbors=3, n_jobs=-1),
-        age_regressor=KNeighborsRegressor(n_neighbors=3, n_jobs=-1))
+        race_classifier=KNeighborsClassifier(n_neighbors=5, n_jobs=-1),
+        gender_classifier=KNeighborsClassifier(n_neighbors=5, n_jobs=-1),
+        age_regressor=KNeighborsRegressor(n_neighbors=5, n_jobs=-1))
     for embedder in EMBEDDERS
 ]
 
@@ -112,7 +112,8 @@ def build_data_matrix(df: pd.DataFrame):
 
 def main(run_feature: bool=True, run_noise: bool=True):
     df = load_features()
-    df = df.sample(100000) # <- memory limitation
+    X = build_data_matrix(df)
+    # df = df.sample(100000) # <- memory limitation
     Xtrain, Xtest = build_data_matrix(df[df["train"]]), build_data_matrix(df[~df["train"]])
     for model in MODELS:
         with open(os.path.join(REPORT_PATH, model.name+'.txt'), 'a') as report_file:
@@ -128,7 +129,15 @@ def main(run_feature: bool=True, run_noise: bool=True):
         if run_noise:
             run_noise_robustness_test(model, Xtest, test_embeddings)
 
+        # Train on full data and save final model
+        print('Fitting and saving final model...')
+        embedding = model.embedder.fit_transform(X)
+        model.set_embedding(embedding)
+        model.race_classifier.fit(embedding, df['race'].values)
+        model.gender_classifier.fit(embedding, df['gender'].values)
+        model.age_regressor.fit(embedding, df['age'].values)
         model.save()
+        print('Final model saved!')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process some integers.')

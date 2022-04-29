@@ -4,18 +4,10 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '
 
 from argparse import ArgumentParser
 import pickle as pkl
-import numpy as np
-from PIL import Image
 from tqdm import tqdm
 import pandas as pd
-from skimage import color
 
-def img_2D(img_4D):
-    img_3D = img_4D[:, :, :3]
-    X = img_3D / 255 # <- converts to float
-    X = color.rgb2gray(X)
-    X = X.reshape(X.shape[0], -1)
-    return X
+from src.features.load_image import load_img_as_gray
 
 if __name__ == '__main__':
     arg_parser = ArgumentParser(description='Use --model to predict (age, race, gender) for all images in --image_folder')
@@ -29,7 +21,8 @@ if __name__ == '__main__':
 
     args = arg_parser.parse_args()
 
-    # Remove file type ending if someone puts it in the output argument
+    # Remove file type ending if someone puts it in the model or output argument
+    args.model = os.path.splitext(args.model)[0]
     args.output = os.path.splitext(args.output)[0]
 
     model_base_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', '..', 'models')
@@ -44,12 +37,11 @@ if __name__ == '__main__':
     print('Making predictions...')
     prediction_dict = {'image': [], 'age': [], 'race': [], 'gender': []}
     for img_file in tqdm(sorted(os.listdir(os.path.join(image_folder_base_path, args.image_folder)))):
-        img_name = os.path.splitext(img_file)[0]
-        base_size = (200,200)
-        img = np.array(Image.open(os.path.join(image_folder_base_path, args.image_folder, img_file)).resize(base_size))
-        img = img_2D(img)
+        img_path = os.path.join(image_folder_base_path, args.image_folder, img_file)
+        img = load_img_as_gray(img_path)
         age, race, gender = model.predict(img.flatten().reshape(1,-1))
 
+        img_name = os.path.splitext(img_file)[0]
         prediction_dict['image'].append(img_name)
         prediction_dict['age'].extend(age)
         prediction_dict['race'].extend(race)

@@ -1,5 +1,7 @@
 import os
+import numpy as np
 import pickle as pkl
+from PIL import Image
 
 class Model():
 
@@ -33,4 +35,28 @@ class Model():
         gender = self.gender_classifier.predict(embedding)
 
         return age, race, gender
+    
+    def set_embedding(self, embedding):
+        self.embedding = embedding
 
+    
+    def find_best_face_match(self, image):
+        '''
+        Find the face image that is closest to the given image in the model face space embedding.
+
+        :param model:       Model with face space embedding
+        :param image:       Image of face to find best match for in the embedded face space
+
+        :returns:           Image of best matching face in embedded face space as a numpy array
+        '''
+        img = image.reshape(1,-1)
+        img_emb = self.embedder.transform(img)
+        dists = ((img_emb - self.embedding)**2).sum(1)
+        best_match_idx = dists.argmin()
+
+        # Load best matching image
+        best_img_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', '..', 
+                                    'data', 'raw', 'Faces', f'{best_match_idx}.jpg')
+        img = np.array(Image.open(best_img_path))
+
+        return img, best_match_idx
