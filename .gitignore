@@ -774,6 +774,8 @@ data/processed/**
 data/prediction/**
 data/face_match/**
 
+models/**
+
 # Keep the .gitkeep files
 !data/raw/.gitkeep
 !data/processed/.gitkeep
