@@ -8,11 +8,7 @@ import pandas as pd
 from skimage import color
 import datetime as dt
 
-<<<<<<< HEAD
-from sklearn.decomposition import PCA, MiniBatchDictionaryLearning, NMF
-=======
 from sklearn.decomposition import IncrementalPCA, MiniBatchDictionaryLearning, NMF
->>>>>>> 5213995de495c44c59737d8e9926e685dc7f01c2
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.metrics import confusion_matrix, classification_report, mean_squared_error, r2_score
 
@@ -20,26 +16,14 @@ from src.models.model import Model
 from src.features.serialization import load_features
 
 EMBEDDERS = [
-<<<<<<< HEAD
-    PCA(n_components=100)
-    # MiniBatchDictionaryLearning(n_components=15, alpha=0.1, 
-    #     n_iter=50, batch_size=3, random_state=np.random.RandomState(0)),
-    # NMF(n_components=100, init="nndsvda", tol=5e-3)
-    
-=======
     IncrementalPCA(n_components=50),
     MiniBatchDictionaryLearning(n_components=50, n_jobs=-1),
     NMF(n_components=50),
->>>>>>> 5213995de495c44c59737d8e9926e685dc7f01c2
 ]
 
 # We create a 5NN predictor for each embedding algorithm
 MODELS = [
-<<<<<<< HEAD
-    Model('model_all',
-=======
     Model(f'model-{embedder.__class__.__name__}'.lower(),
->>>>>>> 5213995de495c44c59737d8e9926e685dc7f01c2
         embedder=embedder,
         race_classifier=KNeighborsClassifier(n_neighbors=5, n_jobs=-1),
         gender_classifier=KNeighborsClassifier(n_neighbors=5, n_jobs=-1),
