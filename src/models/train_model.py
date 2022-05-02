@@ -16,9 +16,9 @@ from src.models.model import Model
 from src.features.serialization import load_features
 
 EMBEDDERS = [
-    IncrementalPCA(n_components=50),
-    MiniBatchDictionaryLearning(n_components=50, n_jobs=-1),
-    NMF(n_components=50),
+    IncrementalPCA(n_components=16),
+    MiniBatchDictionaryLearning(n_components=16, n_jobs=-1),
+    NMF(n_components=16),
 ]
 
 # We create a 5NN predictor for each embedding algorithm
