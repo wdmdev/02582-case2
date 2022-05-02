@@ -67,7 +67,7 @@ def run_feature_robustness_test(model, model_name:str, df: pd. DataFrame, e_trai
             print(msg)
 
 def gauss(img: np.ndarray) -> np.ndarray:
-    noise = np.random.normal(img.mean(), img.std()/2, size=img.shape)
+    noise = np.random.normal(0, img.std(), size=img.shape)
     noise[noise < 0] = 0
     return img + noise
 
