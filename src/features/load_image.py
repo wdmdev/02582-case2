@@ -4,13 +4,10 @@ from PIL import Image
 from skimage import color
 
 def img_gray(img):
-    if len(img.shape) == 2:
-        # Image already gray scale
-        return img
-
     # Sometimes last dimension is 4, but we only keep the 3 first
-    img = img[:, :, :3]
     X = img / 255 # <- converts to float
+    if X.shape[2] > 3:
+        X = X[:,:,:3]
     X = color.rgb2gray(X)
     X = X.reshape(X.shape[0], -1)
     return X
