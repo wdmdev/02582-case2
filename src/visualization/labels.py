@@ -3,8 +3,13 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 def plot_data_dists(df: pd.DataFrame, out: str):
-    fig = plt.figure(figsize=(8, 8))
+    fig = plt.figure(figsize=(12, 12))
     fig.suptitle(f"Label distributions over {len(df)} images")
+
+    df['gender'] = df['gender'].apply(lambda gen: 'Male' if gen == 0 else 'Female')
+    df['race'] = df['race'].apply(lambda r: 'White' if r == 0 else 'Black' if r == 1 
+                                    else 'Asian' if r == 2 else 'Indian' if r == 3
+                                    else 'Others')
 
     gs = fig.add_gridspec(2,2)
     ax1 = fig.add_subplot(gs[0, 0])
