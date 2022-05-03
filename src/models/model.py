@@ -40,7 +40,7 @@ class Model():
         self.embedding = embedding
 
     
-    def find_best_face_match(self, image):
+    def find_n_best_face_match(self, image, n):
         '''
         Find the face image that is closest to the given image in the model face space embedding.
 
@@ -52,11 +52,14 @@ class Model():
         img = image.reshape(1,-1)
         img_emb = self.embedder.transform(img)
         dists = ((img_emb - self.embedding)**2).sum(1)
-        best_match_idx = dists.argmin()
+        best_match_ids = np.sort(dists)[:n]
 
         # Load best matching image
-        best_img_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', '..', 
-                                    'data', 'raw', 'Faces', f'{best_match_idx}.jpg')
-        img = np.array(Image.open(best_img_path))
+        best_matches = []
+        for id in best_match_ids:
+            best_img_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', '..', 
+                                        'data', 'raw', 'Faces', f'{id}.jpg')
+            img = np.array(Image.open(best_img_path))
+            best_matches.append(img)
 
-        return img, best_match_idx
+        return list(zip(best_matches, best_match_ids.tolist()))

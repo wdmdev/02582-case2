@@ -15,6 +15,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--model', '-m', type=str, required=True, 
                         help='Name of model to load, which must be placed inside data/models')
+    parser.add_argument('--N', type=str, default=1, help='Will find top N matches. Default is 1')
     parser.add_argument('--image_folder', '-if', type=str, required=True, 
                         help='Name of image folder, which must be placed inside data/prediction')
     parser.add_argument('--output', '-o', type=str, required=True,
@@ -41,10 +42,11 @@ if __name__ == '__main__':
     for img_file in tqdm(sorted(os.listdir(os.path.join(image_folder_base_path, args.image_folder)))):
         img_path = os.path.join(image_folder_base_path, args.image_folder, img_file)
         img = load_img_as_gray(img_path)
-        # Best face as numpy array
-        best_face_array, id = model.find_best_face_match(img)
+        # Best face as numpy array and their index
+        face_matches = model.find_n_best_face_match(img, args.N)
 
-        img_name = os.path.splitext(img_file)[0]
-        img_match_path = os.path.join(matches_output_path, f'img_{img_name}_best_match_img{id}.jpg')
-        best_face_img = Image.fromarray(best_face_array)
-        best_face_img.save(img_match_path)
+        for n, (fm, id) in enumerate(face_matches):
+            img_name = os.path.splitext(img_file)[0]
+            img_match_path = os.path.join(matches_output_path, f'img_{img_name}_top_{n}_match_img{id}.jpg')
+            best_face_img = Image.fromarray(fm)
+            best_face_img.save(img_match_path)
