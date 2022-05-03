@@ -16,9 +16,9 @@ from src.models.model import Model
 from src.features.serialization import load_features
 
 EMBEDDERS = [
-    IncrementalPCA(n_components=50),
-    MiniBatchDictionaryLearning(n_components=50, n_jobs=-1),
-    NMF(n_components=50),
+    IncrementalPCA(n_components=16),
+    MiniBatchDictionaryLearning(n_components=16, n_jobs=-1),
+    NMF(n_components=16),
 ]
 
 # We create a 5NN predictor for each embedding algorithm
@@ -67,7 +67,7 @@ def run_feature_robustness_test(model, model_name:str, df: pd. DataFrame, e_trai
             print(msg)
 
 def gauss(img: np.ndarray) -> np.ndarray:
-    noise = np.random.normal(img.mean(), img.std()/2, size=img.shape)
+    noise = np.random.normal(0, img.std(), size=img.shape)
     noise[noise < 0] = 0
     return img + noise
 
