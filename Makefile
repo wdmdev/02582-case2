@@ -27,6 +27,9 @@ predict:
 face_matching:
 	python src/models/face_match_model.py --model $(model) --image_folder $(image_folder) --output $(output)
 
+image_distances:
+	python src/visualization/image_distances.py
+
 ## Delete all compiled Python files
 clean:
 	find . -type f -name "*.py[co]" -delete
